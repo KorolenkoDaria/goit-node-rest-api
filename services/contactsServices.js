@@ -5,14 +5,17 @@ import path from 'path';
 const CONTACTS_PATH = path.resolve('db', 'contacts.json');
 
  export async function listContacts() {
-  const data = await fs.readFile(CONTACTS_PATH, 'utf-8');
-  return JSON.parse(data);
+   const data = await fs.readFile(CONTACTS_PATH, 'utf-8');
+   return JSON.parse(data);
 }
 
 export async function getContactById(contactId) {
   const data = await listContacts();
   const result = data.find(i => i.id === contactId);
-  return result || null;
+  if (!result) {
+    return null;
+  }
+  return result;
 }
 
 export async function removeContact(contactId) {

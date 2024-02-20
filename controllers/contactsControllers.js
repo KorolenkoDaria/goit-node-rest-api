@@ -7,15 +7,15 @@ import {
 } from "../services/contactsServices.js";
 import  HttpError  from "../helpers/HttpError.js";
 
-export const getAllContacts = async (req, res) => {
+export const getAllContacts = async (req, res, next) => {
     try {
         const contacts = await listContacts();
-        if(!contacts) {
+     /*    if(!contacts) {
             throw HttpError(404, "Not found");
-        };
+        }; */
         res.status(200).json(contacts);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        next(error);
     };
 };
 
