@@ -19,7 +19,7 @@ export const getAllContacts = async (req, res) => {
     };
 };
 
-export const getOneContact = async (req, res) => {
+export const getOneContact = async (req, res, next) => {
     try {
         const contact = await getContactById(req.params.id);
         if(!contact) {
@@ -27,11 +27,11 @@ export const getOneContact = async (req, res) => {
         }
         res.status(200).json(contact);
       } catch(error) {
-        res.status(500).json({ error: error.message });
+        next(error);
     };
 };
 
-export const deleteContact = async (req, res) => {
+export const deleteContact = async (req, res, next) => {
     try {
         const contact = await removeContact(req.params.id);
         if(!contact) {
@@ -39,7 +39,7 @@ export const deleteContact = async (req, res) => {
         };
         res.status(200).json(contact);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        next(error);
     };
 };
 
