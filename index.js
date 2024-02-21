@@ -1,8 +1,8 @@
 import express from 'express';
 import contactsRouter from './routes/contactsRouter.js';
 import mongoose, { connect } from 'mongoose';
+import { DB_HOST } from "./config.js";
 
-const DB_HOST = "mongodb+srv://Korolenko:l3iguC2LCPOUXNw2@cluster0.w3zl1n3.mongodb.net/db-contacts?retryWrites=true&w=majority";
 const app = express();
 
 mongoose.set("strictQuery", true);
