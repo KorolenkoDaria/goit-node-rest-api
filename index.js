@@ -1,7 +1,7 @@
 import express from 'express';
 import contactsRouter from './routes/contactsRouter.js';
 import mongoose, { connect } from 'mongoose';
-import { DB_HOST } from "./config.js";
+const { DB_HOST } = process.env;
 
 const app = express();
 
