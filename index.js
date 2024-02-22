@@ -1,6 +1,9 @@
 import express from 'express';
 import contactsRouter from './routes/contactsRouter.js';
 import mongoose, { connect } from 'mongoose';
+import dotenv from "dotenv";
+
+dotenv.config()
 const { DB_HOST } = process.env;
 
 const app = express();
