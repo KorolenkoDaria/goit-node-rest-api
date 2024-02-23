@@ -1,23 +1,14 @@
-import express from 'express';
-import contactsRouter from './routes/contactsRouter.js';
-import mongoose, { connect } from 'mongoose';
 import dotenv from "dotenv";
+dotenv.config();
 
-dotenv.config()
-const { DB_HOST } = process.env;
-
+import express from 'express';
 const app = express();
 
-mongoose.set("strictQuery", true);
-mongoose.connect(DB_HOST)
-    .then(() => { 
-      app.listen(8080,()=>console.log("Connect success"))
-    })
-  .catch(error => {
-    console.log(error.message);
-    process.exit(1);
-  })
-    
+
+
+import "./server.js"; 
+import contactsRouter from './routes/contactsRouter.js';
+
 app.use(express.urlencoded({ extended: false }));
 app.use('/api', contactsRouter);
 app.use((err, req, res, next) => {

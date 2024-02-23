@@ -1,10 +1,18 @@
+import dotenv from "dotenv";
+dotenv.config();  
+
 import mongoose, { connect } from 'mongoose';
-import express from 'express';
+import app from "./index.js";
 
-
-const DB_HOST = "mongodb+srv://Korolenko:l3iguC2LCPOUXNw2@cluster0.w3zl1n3.mongodb.net/db-contacts?retryWrites=true&w=majority";
+const { DB_HOST } = process.env;
 
 mongoose.set("strictQuery", true);
 mongoose.connect(DB_HOST)
-  .then(() =>  console.log("Dabase connect "))
-  .catch(error => console.log(error.message))
+  .then(() => { 
+    console.log("Database connection successful")
+    app.listen(8080)
+    })
+  .catch(error => {
+    console.log(error.message);
+    process.exit(1);
+  })
