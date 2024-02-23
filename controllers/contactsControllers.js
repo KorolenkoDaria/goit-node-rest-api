@@ -52,11 +52,10 @@ export const updateContact = async (req, res, next) => {
         if ((Object.keys(req.body).length === 0)) {
             throw HttpError(400, "Body must have at least one field" );
         };
-        /* const contact = await Contact.findByIdAndUpdate(req.params.id);
-        if(!contact) {  
+        const updatedContact = await Contact.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if(!updatedContact) {  
             throw HttpError(404, "Not found");
-        };  */
-        const updatedContact = await Contact.findByIdAndUpdate(req.params.id, req.body, {new:true});
+        };
         res.status(200).json(updatedContact);
 } catch (error) {
     next(error);
