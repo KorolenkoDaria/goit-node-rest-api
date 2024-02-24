@@ -15,11 +15,11 @@ const contactSchema = new Schema({
     type: Boolean,
     default: false,
   },
-});
-
-/* contactSchema.post("save", (error, data, next) => {
-  error.status = 400;
-  next();
-})   */
+},
+{ versionKey: false}
+);
 
 export const Contact = model("contact", contactSchema);
+
+
+
