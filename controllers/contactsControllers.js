@@ -4,7 +4,8 @@ import { Contact } from "../models/contact.js";
 
 export const getAllContacts = async (req, res, next) => {
     try {
-        const contacts = await Contact.find();
+        const { id: owner } = req.user;
+        const contacts = await Contact.find({owner});
         if(!contacts) {
             throw HttpError(404, "Not found");
         };
@@ -40,7 +41,8 @@ export const deleteContact = async (req, res, next) => {
 
 export const createContact = async (req, res) => {
     try {
-        const newContact = await Contact.create(req.body);
+        const { id: owner } = req.user;
+        const newContact = await Contact.create({ ...req.body, owner });
         res.status(201).json(newContact);
     } catch (error) {
         res.status(500).json({ error: error.message });

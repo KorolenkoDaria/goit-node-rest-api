@@ -7,9 +7,12 @@ const app = express();
 
 
 import "./server.js"; 
+import authRouter from "./routes/authRouter.js";
 import contactsRouter from './routes/contactsRouter.js';
 
+
 app.use(express.urlencoded({ extended: false }));
+app.use('/api', authRouter);
 app.use('/api', contactsRouter);
 app.use((err, req, res, next) => {
   const { status = 500, message = "Server error" } = err;
