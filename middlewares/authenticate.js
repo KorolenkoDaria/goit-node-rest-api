@@ -1,27 +1,43 @@
 import dotenv from "dotenv";
 dotenv.config();
+
 import HttpError from "../helpers/HttpError.js";
 import jwt from "jsonwebtoken";
 import {User} from "../models/user.js"
 const {SECRET_KEY}  = process.env;
 
 export const authenticate = async (req, res, next) => {
-    const { authorization = "" } = req.headers;
-    const [bearer, token] = authorization.split(" ");
-    console.log(bearer);
-    if (bearer !== "Bearer") {
-        next(HttpError(401));
+    const { authorization } = req.headers;
+    if (authorization === "undefined") {
+        throw HttpError(401, "Not authorized");
     }
+
+    const [bearer, token] = authorization.split(" "); 
+    if (bearer !== "Bearer") {
+        throw HttpError(401, "Not authorized");
+    }
+
     try {
-        const { id } = jwt.verify(token, SECRET_KEY);
-        const user = await User.findById(id);
-       
+        jwt.verify(token, SECRET_KEY, (error, decode) => {
+            if (error) {
+
+                if (error.name === "TokenExpiredError") {
+                    throw HttpError(401, "Token expired");
+                }
+                throw HttpError(401,"Not authorized")
+            }     
+            req.user = {
+                id: decode.id
+            }
+
+        });    
+        const user = await User.findById(req.user.id);       
         if (!user || !user.token || user.token !== token) {
-            next(HttpError(401));
+            throw HttpError(401, "Not authorized");
         }
         req.user = user;
         next();
     } catch (error) {
-        next(HttpError(401));
+        next(error);
     }
 } 

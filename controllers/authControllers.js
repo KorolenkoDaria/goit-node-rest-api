@@ -9,17 +9,15 @@ const {SECRET_KEY} = process.env;
 
 export const register = async (req, res, next) => {
     try {
-        const { name, email, password } = req.body;
-        const normalizeEmail = email.trim().toLowerCase();
-        const isUser = await User.findOne({ email: normalizeEmail }); 
+        const {email, password } = req.body;
+        const isUser = await User.findOne({ email: email }); 
 
         if (isUser) {
             throw HttpError(409, "Email already in use")
         }
         const hashPassword = await bcrypt.hash(password, 10); 
         const newUser = {
-            name: name,
-            email: normalizeEmail,
+            email,
             password: hashPassword,
         }
         const result = await User.create(newUser);
@@ -34,18 +32,19 @@ export const register = async (req, res, next) => {
 export const login = async (req, res, next) => {
 try {
     const { email, password } = req.body;
-    const normalizeEmail = email.trim().toLowerCase();
-    const user = await User.findOne({ email: normalizeEmail });
-    const passwordCompare = await bcrypt.compare(password, user.password);
-    if (!user || !passwordCompare) {
-        throw HttpError(401, "Email or password invalid")
+    const isUser = await User.findOne({ email: email });
+    const passwordCompare = await bcrypt.compare(password, isUser.password);
+    if (!isUser || !passwordCompare) {
+        throw HttpError(401, "Email or password is wrong")
     }
     const payload = {
-        id: user.id,
+        id: isUser._id,
     }
     const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
-    await User.findByIdAndUpdate(user.id, {token})
-    res.status(200).json({ token });
+    await User.findByIdAndUpdate(isUser.id, { token });
+    const { subscription } = isUser;
+    const user = { email, subscription };
+    res.status(200).json({ token,user});
 } catch (error) {
     next(error);
 } 
@@ -53,7 +52,7 @@ try {
 
 export const logout = async (req, res, next) => {
     try {
-        await User.findByIdAndUpdate(req.user.id, { token: null });
+        const user = await User.findByIdAndUpdate(req.user.id, { token: null });
         res.status(204).json({message: "No Content"})
     } catch (error) {
         next(error);
@@ -62,7 +61,6 @@ export const logout = async (req, res, next) => {
 
 export const current = async (req, res, next) => {
     try {
-        console.log(req.user);
         const { email, subscription } = req.user;
 
         res.json({email, subscription})
@@ -70,3 +68,20 @@ export const current = async (req, res, next) => {
         next(error);
     }
 }
+
+export const updateUserSubscription = async (req, res, next) => {
+    try {
+        const { id } = req.user;
+        const { subscription } = req.body;
+
+        const updatedUser = await User.findByIdAndUpdate(id,{ subscription: subscription }, { new: true });
+
+        if (!updatedUser) {
+            throw HttpError(404, "Not found");
+        }
+
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        next(error);
+    }
+};
