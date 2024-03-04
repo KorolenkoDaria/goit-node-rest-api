@@ -8,11 +8,11 @@ const authRouter = express.Router();
 
 const jsonParser = express.json();
 
-authRouter.post("/users/register", jsonParser, validateBody(userSchemaValidation), register);
-authRouter.post("/users/login", jsonParser, validateBody(userSchemaValidation), login);
-authRouter.patch("/users",jsonParser, authenticate, validateBody(userSchemaUpdateSubscription), updateUserSubscription);
-authRouter.post("/users/logout", authenticate, logout);
-authRouter.get("/users/current", authenticate, current);
+authRouter.post("/register", jsonParser, validateBody(userSchemaValidation), register);
+authRouter.post("/login", jsonParser, validateBody(userSchemaValidation), login);
+authRouter.patch("/",jsonParser, authenticate, validateBody(userSchemaUpdateSubscription), updateUserSubscription);
+authRouter.post("/logout", authenticate, logout);
+authRouter.get("/current", authenticate, current);
 
 
 export default authRouter;
