@@ -16,11 +16,15 @@ export const register = async (req, res, next) => {
       throw HttpError(409, "Email already in use");
     }
     const hashPassword = await bcrypt.hash(password, 10);
+    const avatar = gravatar.url(email);
     const newUser = {
       email,
       password: hashPassword,
+      avatarURL: avatar,
     };
+    console.log(newUser);
     const result = await User.create(newUser);
+    console.log(result);
     const { subscription } = result;
     const user = { email, subscription };
     res.status(201).json({ user });
