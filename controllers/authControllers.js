@@ -26,7 +26,6 @@ export const register = async (req, res, next) => {
     };
     console.log(newUser);
     const result = await User.create(newUser);
-    console.log(result);
     const { subscription } = result;
     const user = { email, subscription };
     res.status(201).json({ user });
