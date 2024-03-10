@@ -4,6 +4,7 @@ import HttpError from "../helpers/HttpError.js";
 import { User } from "../models/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import gravatar from "gravatar";
 
 const { SECRET_KEY } = process.env;
 
@@ -17,6 +18,7 @@ export const register = async (req, res, next) => {
     }
     const hashPassword = await bcrypt.hash(password, 10);
     const avatar = gravatar.url(email);
+
     const newUser = {
       email,
       password: hashPassword,
