@@ -10,7 +10,6 @@ const updateAvatar = async (req, res, next) => {
       throw HttpError(400, "File not provided");
     }
     const { path: tmpPath, filename } = req.file;
-
     async function main() {
       const image = await Jimp.read(tmpPath);
       await image.resize(250, 250);
@@ -22,13 +21,15 @@ const updateAvatar = async (req, res, next) => {
     await fs.rename(tmpPath, finalUpload);
     const updatedUser = await User.findByIdAndUpdate(
       req.user.id,
-      { avatarURL: finalUpload },
+      { avatarURL: path.join("avatars", filename) },
       { new: true }
     );
+
     if (!updatedUser) {
       throw HttpError(404);
     }
-    res.status(200).json({ avatarURL: path.join("avatars", filename) });
+    const { avatarURL } = updatedUser;
+    res.status(200).json({ avatarURL });
   } catch (error) {
     next(error);
   }
