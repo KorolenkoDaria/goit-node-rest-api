@@ -161,8 +161,6 @@ export const resend = async (req, res, next) => {
       html: `To confirm you registration please click on the <a href="http://localhost:8080/api/users/verify/${verificationToken}">Link</a>`,
       text: `To confirm you registration please open the link http://localhost:8080/api/users/verify/${verificationToken}`,
     });
-
-    console.log(user);
     res.status(200).json({ message: "Verification email sent" });
   } catch (error) {
     next(error);
